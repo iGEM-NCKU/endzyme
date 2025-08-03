@@ -7,14 +7,14 @@ __pycache__/
 *.so
 
 # protein files
-.pdb
-.txt
-.pdbqt
-.cif
+*.pdb
+*.txt
+*.pdbqt
+*.cif
 static/
-.csv
+*.csv
 result/
-.sdf
+*.sdf
 
 # Distribution / packaging
 .Python
