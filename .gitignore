@@ -11,6 +11,10 @@ __pycache__/
 *.txt
 *.pdbqt
 *.cif
+dockingFolder/*.pdb
+dockingFolder/*.txt
+dockingFolder/*.pdbqt
+dockingFolder/*.cif
 static/
 *.csv
 result/
