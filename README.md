@@ -66,8 +66,8 @@ server {
         proxy_read_timeout 600s;
     }
 }
+```
 Then restart Nginx:
-
 ```bash
 sudo nginx -t        # test configuration
 sudo systemctl restart nginx
