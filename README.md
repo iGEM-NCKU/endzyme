@@ -73,9 +73,8 @@ sudo nginx -t        # test configuration
 sudo systemctl restart nginx
 ```
 
-Now the Endzyme frontend and API are available at http://<server-ip>/.
+Now the Endzyme frontend and API are available at `http://<server-ip>/`.
 
-```
 ## Background
 
 ![image](https://hackmd.io/_uploads/H1zpGTXPle.png)
