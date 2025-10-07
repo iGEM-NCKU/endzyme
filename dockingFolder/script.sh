@@ -3,6 +3,10 @@
 ligand_dir="../enzyme_ligand_structures"
 receptor_dir="../static"
 
+if [ -z "$MGLTOOLS_HOME"]; then
+    echo "Please set MGLTOOLS_HOME to your MGLTools 1.5.7 installation dir"
+    exit 1
+fi
 ligand=$1
 receptor=$2
 
@@ -32,8 +36,8 @@ echo "Preparing input files..."
 if [ ! -f "$receptor_pdbqt" ]; then
     if [ -f "$receptor_pdb" ]; then
         echo "[INFO] Generating $receptor_pdbqt from $receptor_pdb"
-        "/c/Program Files (x86)/MGLTools-1.5.7/python.exe" \
-        "/c/Program Files (x86)/MGLTools-1.5.7/Lib/site-packages/AutoDockTools/Utilities24/prepare_receptor4.py" \
+        "$MGLTOOLS_HOME/python.exe" \
+        "$MGLTOOLS_HOME/Lib/site-packages/AutoDockTools/Utilities24/prepare_receptor4.py" \
         -r "$receptor_pdb" -o "$receptor_pdbqt"
     else
         echo "[ERROR] Receptor PDB file not found: $receptor_pdb"
@@ -47,8 +51,8 @@ fi
 if [ ! -f "$ligand_pdbqt" ]; then
     if [ -f "$ligand_pdb" ]; then
         echo "[INFO] Generating $ligand_pdbqt from $ligand_pdb"
-        "/c/Program Files (x86)/MGLTools-1.5.7/python.exe" \
-        "/c/Program Files (x86)/MGLTools-1.5.7/Lib/site-packages/AutoDockTools/Utilities24/prepare_ligand4.py" \
+        "$MGLTOOLS_HOME/python.exe" \
+        "$MGLTOOLS_HOME/Lib/site-packages/AutoDockTools/Utilities24/prepare_ligand4.py" \
         -l "$ligand_pdb" -o "$ligand_pdbqt"
     else
         echo "[ERROR] Ligand PDB file not found: $ligand_pdb"
