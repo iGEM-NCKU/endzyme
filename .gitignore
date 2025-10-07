@@ -8,9 +8,9 @@ __pycache__/
 
 # protein files
 *.pdb
-*.txt
+
 *.pdbqt
-*.cif
+
 dockingFolder/*.pdb
 dockingFolder/*.txt
 dockingFolder/*.pdbqt
