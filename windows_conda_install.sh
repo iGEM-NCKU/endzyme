@@ -8,6 +8,7 @@
 # RUN IN POWERSHELL
 $ErrorActionPreference = "Stop"
 
+REQ_FILE = "./enviroment.yml"
 $InstallPath = "C:\Miniconda3"
 $arch = $env:PROCESSOR_ARCHITECTURE
 if ($arch -eq "ARM64") {
@@ -45,3 +46,5 @@ foreach ($p in $pathsToAdd) {
 Write-Host "Miniconda installed. You may need to open a NEW PowerShell window."
 
 & "$InstallPath\Scripts\conda.exe" --version
+
+& "$InstallPath\Scripts\conda.exe" env create -f "$ReqFile"

@@ -9,6 +9,9 @@
 set -euo pipefail
 
 INSTALL_PATH="/opt/miniconda3"
+REQ_FILE = "./enviroment.yml"
+
+
 ARCH="$(uname -m)"
 case "$ARCH" in
   arm64)   CONDA_URL="https://repo.anaconda.com/miniconda/Miniconda3-latest-MacOSX-arm64.sh" ;;
@@ -33,6 +36,6 @@ rm -rf "$TMP_DIR"
 echo "Installed to: $INSTALL_PATH"
 echo "Open a NEW Terminal (zsh) and run: conda --version"
 
-
+"$INSTALL_PATH/bin/conda" conda env create -f $REQ_FILE
 
 
