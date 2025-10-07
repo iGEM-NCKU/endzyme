@@ -13,7 +13,7 @@ from blast import align_sequences
 PYTHON_FOR_RECEPTOR_PY = "/home/richie/miniconda3/envs/Endzyme/bin/python" 
 APP_ROOT = Path(__file__).resolve().parent
 PYTHON   = sys.executable
-RECEPTOR = APP_ROOT / "receptor.py"         # /home/richie/Endzyme/endzyme/receptor.py
+RECEPTOR = APP_ROOT / "receptor.py"
 GET_LIGAND = APP_ROOT / "getLigand.py"
 
 #conda env for colab
@@ -191,11 +191,11 @@ def api_fold():
       "sequence": "PIAQI...ASK",          
       "jobname": "test123",               
       "templates": "none|pdb100|custom",  x
-      "custom_template_dir": "/path/..",  # 選填 (templates=custom 時必填)
-      "amber": true|false,                # 選填
-      "models": 5,                        # 選填 (int)
-      "recycles": 3,                      # 選填 (int)
-      "force_cpu": false                  # 選填 (bool) 強制用 CPU
+      "custom_template_dir": "/path/..",  
+      "amber": true|false,              
+      "models": 5,                       
+      "recycles": 3,                      
+      "force_cpu": false                  
     }
     """
     data = request.get_json(force=True, silent=True) or {}
@@ -211,7 +211,6 @@ def api_fold():
     recycles = data.get("recycles")
     force_cpu = bool(data.get("force_cpu", False))
 
-    # 建立工作目錄與 CSV
     job_dir = RUNS_ROOT / jobname
     job_dir.mkdir(parents=True, exist_ok=True)
     # cp fasta file to job_dir
