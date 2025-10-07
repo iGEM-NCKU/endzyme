@@ -36,7 +36,7 @@ app = Flask(__name__, static_url_path='/static', static_folder='static')
 #     }})
 
 logging.basicConfig(
-    filename='/home/richie/Endzyme/endzyme.log',
+    filename= APP_ROOT / "endzyme.log",
     level=logging.DEBUG,
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
 )
