@@ -1,6 +1,6 @@
+# receptor.py
+
 import requests
-import time
-import re
 import os
 import sys
 import json
@@ -23,6 +23,13 @@ session.proxies = { "http": None, "https": None }
 
 
 # --- Helper Functions ---
+
+def clean_sequence(seq: str) -> str:
+    """
+    remove other 
+    """
+    valid_aas = set("ACDEFGHIKLMNPQRSTVWY")
+    return "".join([aa for aa in seq.upper() if aa in valid_aas])
 
 def print_step(message):
     """Prints a formatted step message to the console."""
@@ -60,7 +67,8 @@ def find_enzyme_for_ligand(ligand_description):
         "pga": "Dispersin B",
         "beta(1,6)-linked n-acetylglucosamine": "Dispersin B",
         "poly-n-acetylglucosamine": "Dispersin B",
-        "dna":"DNAS1_BOVIN"
+        "dna":"DNAS1_BOVIN",
+        "protein":"Proteinase K"
     }
     enzyme_name = ligand_to_enzyme_map.get(ligand_description.lower())
     if enzyme_name:
@@ -158,14 +166,16 @@ def compare_sequences_to_find_mutations(original_seq, novel_seq):
             mutations.append(f"{orig_aa}{i+1}{novel_aa}")
     return mutations
 
-def generate_novel_sequences_with_zymctrl(original_sequence, num_to_generate=3):
+def generate_novel_sequences_with_zymctrl(original_sequence, maxLength, num_to_generate=3):
     """Uses the AI4PD/ZymCTRL model to generate multiple novel enzyme sequences."""
     print(f"Generating {num_to_generate} novel sequence candidates with ZymCTRL...")
     candidate_sequences = []
     try:
         generator = pipeline('text-generation', model='AI4PD/ZymCTRL')
-        max_len = len(original_sequence)
-
+        if maxLength == None:
+            max_len = len(original_sequence)
+        else:
+            max_len = maxLength
         generated_outputs = generator("<|endoftext|>", max_length=max_len, num_return_sequences=num_to_generate)
 
         for output in generated_outputs:
@@ -205,11 +215,12 @@ def save_files_for_manual_analysis(original_sequence, candidate_sequences, unipr
         print(f"\n--- Processing Candidate {candidate_num} ---")
 
         # Save the candidate sequence to a FASTA file
-        fasta_filename = os.path.join(OUTPUT_DIR, f"candidate_{candidate_num}_{uniprot_id}.fasta")
+        fasta_filename = os.path.join(OUTPUT_DIR, f"candidate_{candidate_num}_{sys.argv[1]}.fasta")
         fasta_header = f">candidate_{candidate_num}|from_{uniprot_id}"
+        clean_seq = clean_sequence(candidate_seq)
         with open(fasta_filename, 'w') as f:
             f.write(f"{fasta_header}\n")
-            f.write(f"{candidate_seq}\n")
+            f.write(f"{clean_seq}\n")
         print(f"  - Saved sequence to: {fasta_filename}")
 
         # Generate and save the mutation list
@@ -230,9 +241,11 @@ def turn_candidates_to_js_files():
           filepath = os.path.join(OUTPUT_DIR, filename)
           with open(filepath, "r", encoding="utf-8") as f:
               content = f.read()
-
+          if filename.startswith("candidate_"):
+            key = "_".join(filename.split("_")[:2])  # 取前兩段 "candidate_1"
+          else:
+            key = filename.replace(".fasta", "")
           # take candidate_x as key
-          key = filename.split("_Q")[0]  # e.g., "candidate_1"
           candidate_dict[key] = {
               "filename": filename,
               "content": content
@@ -251,7 +264,15 @@ def main():
     """Main function to run the complete workflow."""
     setup_environment()
 
+
     ligand_description = sys.argv[1]
+    number_of_generate = int(sys.argv[2])
+    max_length = None
+    #sys.argv[3]
+    if sys.argv[3] == '':
+        pass
+    else:
+        max_length = int(sys.argv[3])
 
     print_step("Part 1.1: Finding a Template Enzyme for the Ligand")
     protein_name = find_enzyme_for_ligand(ligand_description)
@@ -269,7 +290,7 @@ def main():
     download_alphafold_pdb(uniprot_id)
 
     print_step("Part 2: Generating Novel Sequence Candidates (ZymCTRL)")
-    candidate_sequences = generate_novel_sequences_with_zymctrl(original_sequence, num_to_generate=5) # Generate more candidates
+    candidate_sequences = generate_novel_sequences_with_zymctrl(original_sequence, max_length, num_to_generate= number_of_generate) # Generate more candidates
 
     print_step("Part 3: Saving Files for Manual Analysis")
     save_files_for_manual_analysis(original_sequence, candidate_sequences, uniprot_id)
