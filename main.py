@@ -10,27 +10,30 @@ from datetime import datetime
 from pathlib import Path
 from blast import align_sequences
 
-PYTHON_FOR_RECEPTOR_PY = "/home/richie/miniconda3/envs/Endzyme/bin/python" 
+CONDA_PREFIX = os.environ.get("CONDA_PREFIX", "/home/richie/miniconda3")
+
+
+PYTHON_FOR_RECEPTOR_PY = f"{CONDA_PREFIX}/bin/python"
 APP_ROOT = Path(__file__).resolve().parent
 PYTHON   = sys.executable
 RECEPTOR = APP_ROOT / "receptor.py"
 GET_LIGAND = APP_ROOT / "getLigand.py"
 
 #conda env for colab
-CONDA = "/home/richie/miniconda3/bin/conda"       
 COLAB_ENV = "colab_local"                           
-RUNS_ROOT = Path("/home/richie/Endzyme/af2_runs")
+RUNS_ROOT = Path("/af2_runs")
 RUNS_ROOT.mkdir(parents=True, exist_ok=True)
 
 # using https://github.com/YoshitakaMo/localcolabfold?tab=readme-ov-file
-AF2_PATH = "/home/richie/Endzyme/localcolabfold/colabfold-conda/bin/colabfold_batch"
+AF2_PATH = APP_ROOT / "localcolabfold/colabfold-conda/bin/colabfold_batch"
 
 app = Flask(__name__, static_url_path='/static', static_folder='static')
 
-CORS(app,resources={
-    r"/api/*":{"origins" : ["http://localhost:4000", "http://54.237.111.117"]},
-    r"/static/*": {"origins": ["http://localhost:4000", "http://54.237.111.117"]
-    }})
+# for setting server
+# CORS(app,resources={
+#     r"/api/*":{"origins" : ["http://localhost:4000", "http://54.237.111.117"]},
+#     r"/static/*": {"origins": ["http://localhost:4000", "http://54.237.111.117"]
+#     }})
 
 logging.basicConfig(
     filename='/home/richie/Endzyme/endzyme.log',
