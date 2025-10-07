@@ -131,3 +131,5 @@ rm *.pdb *.pdbqt *.csv *.txt *.cif *.sdf 2>/dev/null \
 || echo "you have already removed the files"
 
 echo "Process finished."
+
+# >"C:\Program Files (x86)\MGLTools-1.5.7\python.exe" "C:\Program Files (x86)\MGLTools-1.5.7\Lib\site-packages\AutoDockTools\Utilities24\prepare_receptor4.py" -r fold_dsp_b_ori_model_0.cif dspb_ori.pdbqt
